@@ -61,6 +61,152 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Site Navigation Map */}
+        <div className="bg-white rounded-lg shadow-sm border">
+          <div className="px-6 py-4 border-b">
+            <h2 className="text-xl font-semibold text-gray-900">Site Navigation</h2>
+            <p className="text-sm text-gray-600">All available pages and features in the application</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              
+              {/* Main Dashboard */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  🏠 Dashboard
+                </h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a href="/dashboard" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Dashboard Overview
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Article System */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  📰 Article System
+                </h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a href="/dashboard/control-panel" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Control Panel
+                    </a>
+                    <p className="text-xs text-gray-500 ml-2">Manage sources & fetch operations</p>
+                  </li>
+                  <li>
+                    <a href="/dashboard/news/articles" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Articles View
+                    </a>
+                    <p className="text-xs text-gray-500 ml-2">Browse fetched articles</p>
+                  </li>
+                  <li>
+                    <a href="/dashboard/news/sources" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Sources Management
+                    </a>
+                    <p className="text-xs text-gray-500 ml-2">Add & configure RSS sources</p>
+                  </li>
+                </ul>
+              </div>
+
+              {/* API Endpoints */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  🔌 API Endpoints
+                </h3>
+                <ul className="space-y-2">
+                  <li>
+                    <span className="text-green-600 text-xs font-mono">GET</span>
+                    <span className="text-gray-700 text-sm ml-2">/api/sources</span>
+                  </li>
+                  <li>
+                    <span className="text-blue-600 text-xs font-mono">POST</span>
+                    <span className="text-gray-700 text-sm ml-2">/api/jobs/article-fetch/bulk</span>
+                  </li>
+                  <li>
+                    <span className="text-blue-600 text-xs font-mono">POST</span>
+                    <span className="text-gray-700 text-sm ml-2">/api/jobs/article-fetch/single</span>
+                  </li>
+                  <li>
+                    <span className="text-green-600 text-xs font-mono">GET</span>
+                    <span className="text-gray-700 text-sm ml-2">/api/jobs/article-fetch/logs</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Authentication */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  🔐 Authentication
+                </h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a href="/auth/signin" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Sign In
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/auth/error" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Auth Error Page
+                    </a>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 text-sm">Sign Out (via auth button)</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Development Tools */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  🛠️ Development
+                </h3>
+                <ul className="space-y-2">
+                  <li>
+                    <span className="text-gray-500 text-sm">RSS Test Panel</span>
+                    <p className="text-xs text-gray-500 ml-2">(Component available)</p>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 text-sm">Article Components</span>
+                    <p className="text-xs text-gray-500 ml-2">(Ready for implementation)</p>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Features Status */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  📊 Feature Status
+                </h3>
+                <ul className="space-y-2">
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    <span className="text-sm text-gray-700">Article Fetching</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    <span className="text-sm text-gray-700">Source Management</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    <span className="text-sm text-gray-700">Fetch Logging</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                    <span className="text-sm text-gray-700">Article Categorization</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                    <span className="text-sm text-gray-500">Analytics Dashboard</span>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
 
         {/* User-specific Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

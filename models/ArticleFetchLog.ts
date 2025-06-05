@@ -151,6 +151,7 @@ const ArticleFetchLogSchema: Schema<IArticleFetchLog> = new Schema(
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt
+    suppressReservedKeysWarning: true, // Suppress warning for 'errors' field in sourceResults
   }
 );
 

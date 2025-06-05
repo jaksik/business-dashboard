@@ -88,11 +88,7 @@ export async function GET() {
     
     const sources = await Source.find({}).sort({ createdAt: -1 })
     
-    return NextResponse.json({ 
-      success: true, 
-      data: sources,
-      count: sources.length
-    })
+    return NextResponse.json(sources)
     
   } catch (error) {
     console.error('❌ Error fetching sources:', error)
