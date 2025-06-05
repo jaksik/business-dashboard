@@ -50,9 +50,8 @@ const ArticleSchema: Schema<IArticle> = new Schema(
     guid: { // Globally Unique Identifier from RSS feeds
       type: String,
       trim: true,
-      unique: true,
+      index: true, // Index for fast duplicate checking
       sparse: true, // Allows multiple documents to have a null/missing guid, but if a guid exists, it must be unique
-      index: true,
     },
     fetchedAt: {
       type: Date,
