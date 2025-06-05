@@ -16,6 +16,52 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* Navigation Links */}
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a
+              href="/dashboard/control-panel"
+              className="flex items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+            >
+              <div className="flex-shrink-0 mr-3">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">📡</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-gray-900">Control Panel</h3>
+                <p className="text-xs text-gray-600">Manage article sources and fetch operations</p>
+              </div>
+            </a>
+            
+            <div className="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 opacity-50">
+              <div className="flex-shrink-0 mr-3">
+                <div className="w-8 h-8 bg-gray-400 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">📊</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Analytics</h3>
+                <p className="text-xs text-gray-500">Coming soon</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 opacity-50">
+              <div className="flex-shrink-0 mr-3">
+                <div className="w-8 h-8 bg-gray-400 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">⚙️</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Settings</h3>
+                <p className="text-xs text-gray-500">Coming soon</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         {/* User-specific Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
