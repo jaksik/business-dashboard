@@ -322,8 +322,12 @@ class ArticleFetchOrchestrator {
     try {
       console.log(`🔍 [${this.jobId}] RSS Processing: ${source.name} with limit ${maxArticles}`)
       
-      // Step 1: Fetch and parse RSS feed
-      const rssResult: RSSFetchResult = await fetchRSSFeed(source, this.jobId, maxArticles)
+      // Step 1: Fetch and parse RSS feed - pass minimal source object
+      const rssResult: RSSFetchResult = await fetchRSSFeed(
+        { name: source.name, url: source.url }, // Only pass what the processor needs
+        this.jobId, 
+        maxArticles
+      )
       
       if (!rssResult.success) {
         throw new Error(rssResult.error || 'RSS fetch failed')
@@ -381,14 +385,12 @@ class ArticleFetchOrchestrator {
 // Export convenience functions
 export async function fetchAllArticles(userMaxArticles?: number): Promise<FetchJobResult> {
   const orchestrator = new ArticleFetchOrchestrator()
-  const safeMaxArticles = calculateMaxArticles(userMaxArticles)
-  return orchestrator.fetchAllSources(safeMaxArticles)
+  return orchestrator.fetchAllSources(userMaxArticles)
 }
 
 export async function fetchArticlesFromSource(sourceId: string, userMaxArticles?: number): Promise<FetchJobResult> {
   const orchestrator = new ArticleFetchOrchestrator()
-  const safeMaxArticles = calculateMaxArticles(userMaxArticles)
-  return orchestrator.fetchSingleSource(sourceId, safeMaxArticles)
+  return orchestrator.fetchSingleSource(sourceId, userMaxArticles)
 }
 
 // Export the class for advanced usage
