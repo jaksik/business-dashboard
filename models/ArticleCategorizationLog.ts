@@ -50,7 +50,6 @@ export interface IArticleCategorizationLog extends Document {
   totalArticlesSuccessful: number
   totalArticlesFailed: number
   articleLimit: number
-  batchSize: number
   
   // Category distributions
   newsCategoryDistribution: INewsCategoryDistribution
@@ -135,7 +134,6 @@ const ArticleCategorizationLogSchema = new Schema<IArticleCategorizationLog>({
   totalArticlesSuccessful: { type: Number, required: true, default: 0 },
   totalArticlesFailed: { type: Number, required: true, default: 0 },
   articleLimit: { type: Number, required: true },
-  batchSize: { type: Number, required: true },
   
   // Category distributions
   newsCategoryDistribution: { 

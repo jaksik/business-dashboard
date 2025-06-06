@@ -14,12 +14,10 @@ import {
  */
 export async function createCategorizationRunLog(
   articleLimit: number,
-  batchSize: number,
   triggeredBy: 'manual' | 'scheduled' | 'api' = 'manual'
 ): Promise<IArticleCategorizationLog> {
   const runLog = new ArticleCategorizationLog({
     articleLimit,
-    batchSize,
     triggeredBy,
     totalArticlesAttempted: 0,
     totalArticlesSuccessful: 0,
