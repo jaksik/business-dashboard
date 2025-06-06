@@ -1,39 +1,66 @@
-export function buildCategorizationPrompt(
-  title: string, 
-  description: string, 
-  sourceName: string
-): string {
-  return `
-You are an expert news categorizer. Analyze this article and categorize it appropriately.
+import { NEWS_CATEGORY_CRITERIA, TECH_CATEGORY_CRITERIA, NEWS_CATEGORIES, TECH_CATEGORIES } from '../../constants/categories/index'
 
-ARTICLE DETAILS:
-Title: "${title}"
-Description: "${description}"
-Source: "${sourceName}"
+export function buildBatchCategorizationPrompt(articles: Array<{
+  _id: string;
+  title: string;
+  metaDescription?: string;
+  sourceName: string;
+}>): string {
+  const articlesText = articles.map((article, index) => 
+    `Article ${index + 1} (ID: ${article._id}):
+Title: "${article.title}"
+Description: "${article.metaDescription || 'No description'}"
+Source: ${article.sourceName}`
+  ).join('\n\n');
 
-CATEGORIES (choose the most relevant ones):
-- news: General news categories (Politics, World, Sports, Entertainment, Health, etc.)
-- tech: Technology categories (AI, Software, Hardware, Startups, etc.)  
-- business: Business categories (Finance, Markets, Economy, Companies, etc.)
-- science: Science categories (Research, Medicine, Space, Environment, etc.)
+  // Build news category criteria from constants
+  const newsCriteriaText = Object.entries(NEWS_CATEGORY_CRITERIA)
+    .map(([category, criteria], index) => {
+      return `${index + 1}. **${category}:**
+   * ${criteria.nature}
+   * Keywords: ${criteria.keywords.map(k => `"${k}"`).join(', ')}
+   * Content: ${criteria.content}`
+    }).join('\n\n');
 
-INSTRUCTIONS:
-1. Only assign categories that clearly fit the article content
-2. Be specific with subcategories (e.g., "Artificial Intelligence" not just "Technology")
-3. Maximum 2-3 categories total
-4. Provide confidence score (0-100)
-5. Explain your reasoning briefly
+  // Build tech category criteria from constants
+  const techCriteriaText = Object.entries(TECH_CATEGORY_CRITERIA)
+    .map(([category, description], index) => {
+      return `${index + 1}. **${category}:** ${description}`
+    }).join('\n');
 
-RESPOND WITH VALID JSON:
+  // Create example with first categories for structure
+  const exampleNewsCategory = NEWS_CATEGORIES[0];
+  const exampleTechCategory = TECH_CATEGORIES[0];
+
+  return `Please categorize the following ${articles.length} articles. You must assign exactly one NEWS category and one TECH category to each article.
+
+${articlesText}
+
+## NEWS CATEGORY CRITERIA:
+
+${newsCriteriaText}
+
+## TECH CATEGORY CRITERIA:
+
+${techCriteriaText}
+
+Return a JSON object with this exact structure:
 {
-  "categories": {
-    "news": "specific category or null",
-    "tech": "specific category or null", 
-    "business": "specific category or null",
-    "science": "specific category or null"
-  },
-  "rationale": "Brief explanation of categorization decision",
-  "confidence": 85
+  "articles": [
+    {
+      "id": "article_id_here",
+      "newsCategory": "${exampleNewsCategory}",
+      "techCategory": "${exampleTechCategory}",
+      "rationale": "Brief explanation of categorization decision",
+      "confidence": 85
+    }
+  ]
 }
-`
+
+IMPORTANT: 
+- Each article must have exactly one newsCategory and one techCategory
+- Use these exact newsCategory options: ${NEWS_CATEGORIES.map(cat => `"${cat}"`).join(', ')}
+- Use these exact techCategory options: ${TECH_CATEGORIES.map(cat => `"${cat}"`).join(', ')}
+- Confidence should be 0-100
+- Return results for all articles in the same order provided`;
 }
