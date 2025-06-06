@@ -1,32 +1,17 @@
 import Parser from 'rss-parser'
-import type { ISource } from '@/models'
 import type { ParsedArticle, RSSFetchResult } from '@/lib/types/jobs/article-fetch'
 
 // Simple RSS parser - only extracts basic fields
 const parser = new Parser()
 
-// Global configuration constants
-const DEFAULT_MAX_ARTICLES = 10 // Global default (should match main index.ts)
-const FAILSAFE_MAX_ARTICLES = 50 // Failsafe maximum (should match main index.ts)
-
-/**
- * Calculate the effective max articles limit with failsafe protection
- * @param userInput - User provided limit (optional)
- * @returns Safe article limit that doesn't exceed failsafe
- */
-function calculateMaxArticles(userInput?: number): number {
-  // If no user input, use default
-  if (!userInput || userInput <= 0) {
-    return DEFAULT_MAX_ARTICLES
-  }
-  
-  // Apply failsafe limit - never allow more than the maximum
-  return Math.min(userInput, FAILSAFE_MAX_ARTICLES)
+// Minimal interface for what the RSS processor actually needs
+interface RSSSource {
+  name: string
+  url: string
 }
 
-export async function fetchRSSFeed(source: ISource, jobId: string, userMaxArticles?: number): Promise<RSSFetchResult> {
-  const maxArticles = calculateMaxArticles(userMaxArticles)
-  console.log(`🔗 [${jobId}] RSS Processor: ${source.name} - limit: ${maxArticles} (requested: ${userMaxArticles || 'default'})`)
+export async function fetchRSSFeed(source: RSSSource, jobId: string, maxArticles: number): Promise<RSSFetchResult> {
+  console.log(`🔗 [${jobId}] RSS Processor: ${source.name} - limit: ${maxArticles}`)
   
   try {
     const feed = await parser.parseURL(source.url)
@@ -82,34 +67,6 @@ export async function fetchRSSFeed(source: ISource, jobId: string, userMaxArticl
       articles: [],
       totalItems: 0,
       error: error instanceof Error ? error.message : 'Unknown RSS parsing error'
-    }
-  }
-}
-
-/**
- * Test RSS feed connectivity and structure
- */
-export async function testRSSFeed(url: string): Promise<{
-  success: boolean
-  feedTitle?: string
-  itemCount?: number
-  error?: string
-}> {
-  try {
-    console.log(`🧪 Testing RSS feed: ${url}`)
-    
-    const feed = await parser.parseURL(url)
-    
-    return {
-      success: true,
-      feedTitle: feed.title,
-      itemCount: feed.items?.length || 0
-    }
-    
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
 }
