@@ -39,7 +39,7 @@ export default function SourcesPage() {
                 },
                 body: JSON.stringify({ 
                     sourceId,
-                    maxArticles: 10 
+                    maxArticles: 10 // Use default, system will apply global configuration
                 }),
             })
 

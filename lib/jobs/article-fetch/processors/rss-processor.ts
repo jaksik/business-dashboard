@@ -5,7 +5,28 @@ import type { ParsedArticle, RSSFetchResult } from '@/lib/types/jobs/article-fet
 // Simple RSS parser - only extracts basic fields
 const parser = new Parser()
 
-export async function fetchRSSFeed(source: ISource, jobId: string, maxArticles: number = 10): Promise<RSSFetchResult> {
+// Global configuration constants
+const DEFAULT_MAX_ARTICLES = 10 // Global default (should match main index.ts)
+const FAILSAFE_MAX_ARTICLES = 50 // Failsafe maximum (should match main index.ts)
+
+/**
+ * Calculate the effective max articles limit with failsafe protection
+ * @param userInput - User provided limit (optional)
+ * @returns Safe article limit that doesn't exceed failsafe
+ */
+function calculateMaxArticles(userInput?: number): number {
+  // If no user input, use default
+  if (!userInput || userInput <= 0) {
+    return DEFAULT_MAX_ARTICLES
+  }
+  
+  // Apply failsafe limit - never allow more than the maximum
+  return Math.min(userInput, FAILSAFE_MAX_ARTICLES)
+}
+
+export async function fetchRSSFeed(source: ISource, jobId: string, userMaxArticles?: number): Promise<RSSFetchResult> {
+  const maxArticles = calculateMaxArticles(userMaxArticles)
+  console.log(`🔗 [${jobId}] RSS Processor: ${source.name} - limit: ${maxArticles} (requested: ${userMaxArticles || 'default'})`)
   
   try {
     const feed = await parser.parseURL(source.url)
