@@ -1,5 +1,5 @@
 import Parser from 'rss-parser'
-import type { ParsedArticle, RSSFetchResult } from '@/lib/types/jobs/article-fetch'
+import type { ParsedArticle, RSSFetchResult } from '@/lib/jobs/article-fetch/types'
 
 // Simple RSS parser - only extracts basic fields
 const parser = new Parser()

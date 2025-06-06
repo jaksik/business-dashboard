@@ -1,6 +1,6 @@
 import connectToDatabase from '@/lib/db'
 import { Article } from '@/models'
-import type { ParsedArticle, SaveResult } from '@/lib/types/jobs/article-fetch'
+import type { ParsedArticle, SaveResult } from '@/lib/jobs/article-fetch/types'
 
 export async function saveArticlesToDatabase(
   articles: ParsedArticle[],

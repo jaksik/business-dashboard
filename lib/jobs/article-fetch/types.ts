@@ -18,6 +18,16 @@ export interface RSSFetchResult {
   error?: string
 }
 
+// HTML-specific result type
+export interface HTMLFetchResult {
+  success: boolean
+  articles: ParsedArticle[]
+  feedTitle?: string
+  feedDescription?: string
+  totalItems: number          // Total articles found on HTML page
+  error?: string
+}
+
 // Article saving result type  
 export interface SaveResult {
   totalArticles: number       // Number of articles passed to saver
