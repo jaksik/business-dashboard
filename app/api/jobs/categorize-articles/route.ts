@@ -5,12 +5,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}))
     const articleCount = body.articleCount || 1
-    const batchSize = body.batchSize || 5
 
-    await categorizeArticles(articleCount, batchSize, 'api')
+    await categorizeArticles(articleCount, 'api')
 
     return NextResponse.json({
-      message: `Article categorization completed for ${articleCount} articles in batches of ${batchSize} - check console for detailed results and run log`
+      message: `Article categorization completed for ${articleCount} articles - check console for detailed results and run log`
     })
 
   } catch (error) {
