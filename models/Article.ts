@@ -16,6 +16,7 @@ export interface IArticle extends Document {
     };
     rationale?: string;
     categorizedAt?: Date;
+    isTrainingData?: boolean; // True if categorized by human trainer, false/undefined for AI
   };
 }
 
@@ -82,6 +83,10 @@ const ArticleSchema: Schema<IArticle> = new Schema(
       categorizedAt: {
         type: Date,
         index: true,
+      },
+      isTrainingData: {
+        type: Boolean,
+        index: true, // Index for efficient filtering
       },
     }
   },

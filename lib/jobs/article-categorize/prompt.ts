@@ -6,7 +6,7 @@ export function buildBatchCategorizationPrompt(articles: Array<{
   metaDescription?: string;
   sourceName: string;
 }>): string {
-  const articlesText = articles.map((article, index) => 
+  const articlesText = articles.map((article, index) =>
     `Article ${index + 1} (ID: ${article._id}):
 Title: "${article.title}"
 Description: "${article.metaDescription || 'No description'}"

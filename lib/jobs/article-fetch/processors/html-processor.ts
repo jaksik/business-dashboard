@@ -48,7 +48,7 @@ export async function fetchHTMLFeed(source: HTMLSource, jobId: string, maxArticl
     const containersToProcess = containers.slice(0, maxArticles)
     console.log(`✂️ [${jobId}] ${source.name}: Processing ${containersToProcess.length} of ${containers.length} containers (limit: ${maxArticles})`)
     
-    containersToProcess.each((index: number, container: any) => {
+    containersToProcess.each((index: number, container) => {
       try {
         const $container = $(container)
         
@@ -101,7 +101,7 @@ export async function fetchHTMLFeed(source: HTMLSource, jobId: string, maxArticl
  * Extract article data from a container using site-specific configuration
  */
 function extractArticleData(
-  $container: cheerio.Cheerio<any>, 
+  $container: cheerio.Cheerio<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
   config: HTMLSiteConfig, 
   $: cheerio.CheerioAPI,
   sourceUrl: string,

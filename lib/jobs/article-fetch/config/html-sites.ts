@@ -80,7 +80,7 @@ export function getSiteConfig(url: string): HTMLSiteConfig | null {
     }
     
     return null
-  } catch (error) {
+  } catch {
     console.error('Invalid URL provided to getSiteConfig:', url)
     return null
   }
