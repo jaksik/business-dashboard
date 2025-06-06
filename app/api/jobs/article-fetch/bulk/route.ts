@@ -16,13 +16,13 @@ export async function POST(request: NextRequest) {
 
     // Parse request body for optional maxArticles parameter
     const body = await request.json().catch(() => ({}))
-    const maxArticles = body.maxArticles || 10 // Default to 10 if not provided
+    const userMaxArticles = body.maxArticles // Pass raw user input, let system handle validation
 
     console.log(`🔄 Bulk article fetch requested by: ${session.user.email}`)
-    console.log(`🔢 Article limit per source: ${maxArticles}`)
+    console.log(`🔢 User requested articles per source: ${userMaxArticles || 'default'}`)
     
-    // Start the bulk fetch job with article limit
-    const result = await fetchAllArticles(maxArticles)
+    // Start the bulk fetch job with user's article limit (system will apply safe limits)
+    const result = await fetchAllArticles(userMaxArticles)
     
     return NextResponse.json({
       success: true,

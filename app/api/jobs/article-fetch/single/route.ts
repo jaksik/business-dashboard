@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json()
-    const { sourceId, maxArticles = 10 } = body
+    const { sourceId, maxArticles: userMaxArticles } = body
 
     if (!sourceId) {
       return NextResponse.json(
@@ -26,10 +26,10 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`🎯 Single source fetch requested by: ${session.user.email} for source: ${sourceId}`)
-    console.log(`🔢 Article limit: ${maxArticles}`)
+    console.log(`🔢 User requested article limit: ${userMaxArticles || 'default'}`)
     
-    // Start the single source fetch job with article limit
-    const result = await fetchArticlesFromSource(sourceId, maxArticles)
+    // Start the single source fetch job with user's article limit (system will apply safe limits)
+    const result = await fetchArticlesFromSource(sourceId, userMaxArticles)
     
     return NextResponse.json({
       success: true,

@@ -46,18 +46,19 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
               <Link href="/dashboard" className="flex items-center">
-                <span className="ml-3 text-xl font-bold text-gray-900">Connor&apos;s Dashboard</span>
+                <span className="ml-3 text-xl font-bold text-gray-900">Business Dashboard</span>
               </Link>
 
               {/* Navigation Links */}
               <nav className="hidden md:flex space-x-6">
-                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Overview
-                </Link>
+   
                 <Link href="/dashboard/news/sources" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Sources
                 </Link>
                 <Link href="/dashboard/news/articles" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Articles
+                </Link>
+                                <Link href="/dashboard/news/fetch-logs" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Articles
                 </Link>
               </nav>

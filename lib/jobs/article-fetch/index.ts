@@ -6,6 +6,51 @@ import { saveArticlesToDatabase } from './utils/article-saver'
 import { generateJobResult, logJobCompletion } from './utils/log-generator'
 import type { FetchResult, FetchJobResult, RSSFetchResult } from '@/lib/types/jobs/article-fetch'
 
+/**
+ * GLOBAL ARTICLE FETCH CONFIGURATION SYSTEM
+ * ==========================================
+ * 
+ * This system implements a three-tier article limit configuration:
+ * 
+ * 1. DEFAULT_MAX_ARTICLES (10): The global default used when no user input is provided
+ *    - Easily configurable by changing the constant below
+ *    - Used for bulk operations and when users don't specify a limit
+ * 
+ * 2. User Input Variable: The number of articles requested by the user
+ *    - Passed from frontend components (BulkFetchModule, SourcesList, etc.)
+ *    - Can be any positive number, but is subject to failsafe protection
+ * 
+ * 3. FAILSAFE_MAX_ARTICLES (50): Hard-coded maximum limit for safety
+ *    - Prevents system overload and API rate limiting
+ *    - NEVER allow more than this number regardless of user input
+ *    - DO NOT CHANGE without careful consideration of system resources
+ * 
+ * The calculateMaxArticles() function implements the logic:
+ * - If no user input or invalid input: use DEFAULT_MAX_ARTICLES
+ * - If user input is valid: use Math.min(userInput, FAILSAFE_MAX_ARTICLES)
+ * 
+ * This ensures the system is safe, predictable, and user-friendly.
+ */
+
+// Global configuration for max articles per source
+const DEFAULT_MAX_ARTICLES = 10 // Easily configurable global default
+const FAILSAFE_MAX_ARTICLES = 50 // Hard-coded failsafe maximum - DO NOT CHANGE
+
+/**
+ * Calculate the effective max articles limit with failsafe protection
+ * @param userInput - User provided limit (optional)
+ * @returns Safe article limit that doesn't exceed failsafe
+ */
+function calculateMaxArticles(userInput?: number): number {
+  // If no user input, use default
+  if (!userInput || userInput <= 0) {
+    return DEFAULT_MAX_ARTICLES
+  }
+  
+  // Apply failsafe limit - never allow more than the maximum
+  return Math.min(userInput, FAILSAFE_MAX_ARTICLES)
+}
+
 type LeanSource = ISource & { _id: string }
 
 class ArticleFetchOrchestrator {
@@ -118,9 +163,10 @@ class ArticleFetchOrchestrator {
   /**
    * Fetch articles from all active sources
    */
-  async fetchAllSources(maxArticles: number = 10): Promise<FetchJobResult> {
+  async fetchAllSources(userMaxArticles?: number): Promise<FetchJobResult> {
+    const maxArticles = calculateMaxArticles(userMaxArticles)
     console.log(`🚀 [${this.jobId}] Starting bulk article fetch at ${this.startTime.toISOString()}`)
-    console.log(`🔢 [${this.jobId}] Article limit per source: ${maxArticles}`)
+    console.log(`🔢 [${this.jobId}] Article limit per source: ${maxArticles} (user requested: ${userMaxArticles || 'default'}, global default: ${DEFAULT_MAX_ARTICLES}, failsafe: ${FAILSAFE_MAX_ARTICLES})`)
     
     try {
       await connectToDatabase()
@@ -167,8 +213,10 @@ class ArticleFetchOrchestrator {
   /**
    * Fetch articles from a single source by ID
    */
-  async fetchSingleSource(sourceId: string, maxArticles: number = 10): Promise<FetchJobResult> {
+  async fetchSingleSource(sourceId: string, userMaxArticles?: number): Promise<FetchJobResult> {
+    const maxArticles = calculateMaxArticles(userMaxArticles)
     console.log(`🎯 [${this.jobId}] Starting single source fetch for: ${sourceId}`)
+    console.log(`🔢 [${this.jobId}] Article limit: ${maxArticles} (user requested: ${userMaxArticles || 'default'}, global default: ${DEFAULT_MAX_ARTICLES}, failsafe: ${FAILSAFE_MAX_ARTICLES})`)
     
     try {
       await connectToDatabase()
@@ -211,7 +259,7 @@ class ArticleFetchOrchestrator {
   /**
    * Process a single source (RSS or HTML)
    */
-  private async processSingleSource(source: LeanSource, maxArticles: number = 10): Promise<void> {
+  private async processSingleSource(source: LeanSource, maxArticles: number): Promise<void> {
     const startTime = Date.now()
     console.log(`📡 [${this.jobId}] Processing source: ${source.name} (${source.type})`)
     console.log(`🔢 [${this.jobId}] Article limit: ${maxArticles}`)
@@ -268,10 +316,12 @@ class ArticleFetchOrchestrator {
   /**
    * Process RSS source using RSS processor and article saver
    */
-  private async processRSSSource(source: LeanSource, maxArticles: number = 10): Promise<FetchResult> {
+  private async processRSSSource(source: LeanSource, maxArticles: number): Promise<FetchResult> {
     const startTime = Date.now()
     
     try {
+      console.log(`🔍 [${this.jobId}] RSS Processing: ${source.name} with limit ${maxArticles}`)
+      
       // Step 1: Fetch and parse RSS feed
       const rssResult: RSSFetchResult = await fetchRSSFeed(source, this.jobId, maxArticles)
       
@@ -329,14 +379,16 @@ class ArticleFetchOrchestrator {
 }
 
 // Export convenience functions
-export async function fetchAllArticles(maxArticles: number = 10): Promise<FetchJobResult> {
+export async function fetchAllArticles(userMaxArticles?: number): Promise<FetchJobResult> {
   const orchestrator = new ArticleFetchOrchestrator()
-  return orchestrator.fetchAllSources(maxArticles)
+  const safeMaxArticles = calculateMaxArticles(userMaxArticles)
+  return orchestrator.fetchAllSources(safeMaxArticles)
 }
 
-export async function fetchArticlesFromSource(sourceId: string, maxArticles: number = 10): Promise<FetchJobResult> {
+export async function fetchArticlesFromSource(sourceId: string, userMaxArticles?: number): Promise<FetchJobResult> {
   const orchestrator = new ArticleFetchOrchestrator()
-  return orchestrator.fetchSingleSource(sourceId, maxArticles)
+  const safeMaxArticles = calculateMaxArticles(userMaxArticles)
+  return orchestrator.fetchSingleSource(sourceId, safeMaxArticles)
 }
 
 // Export the class for advanced usage
