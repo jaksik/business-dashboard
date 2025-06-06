@@ -1,4 +1,4 @@
-import type { FetchResult, FetchJobResult } from '@/lib/types/jobs/article-fetch'
+import type { FetchResult, FetchJobResult } from '@/lib/jobs/article-fetch/types'
 
 export function generateJobResult(
   jobId: string,

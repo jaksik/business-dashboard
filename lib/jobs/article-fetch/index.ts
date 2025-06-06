@@ -2,9 +2,10 @@ import connectToDatabase from '@/lib/db'
 import { Source, ArticleFetchLog } from '@/models'
 import type { ISource, IArticleFetchLog } from '@/models'
 import { fetchRSSFeed } from './processors/rss-processor'
+import { fetchHTMLFeed } from './processors/html-processor'
 import { saveArticlesToDatabase } from './utils/article-saver'
 import { generateJobResult, logJobCompletion } from './utils/log-generator'
-import type { FetchResult, FetchJobResult, RSSFetchResult } from '@/lib/types/jobs/article-fetch'
+import type { FetchResult, FetchJobResult, RSSFetchResult, HTMLFetchResult } from '@/lib/jobs/article-fetch/types'
 
 /**
  * GLOBAL ARTICLE FETCH CONFIGURATION SYSTEM
@@ -273,8 +274,8 @@ class ArticleFetchOrchestrator {
           result = await this.processRSSSource(source, maxArticles)
           break
         case 'html':
-          // result = await this.processHTMLSource(source) // TODO: Implement later
-          throw new Error('HTML processing not yet implemented')
+          result = await this.processHTMLSource(source, maxArticles)
+          break
         default:
           throw new Error(`Unknown source type: ${source.type}`)
       }
@@ -349,6 +350,53 @@ class ArticleFetchOrchestrator {
         success: true,
         articlesFound: rssResult.totalItems,
         articlesProcessed: rssResult.articles.length,
+        articlesSaved: saveResult.savedArticles,
+        skippedDuplicates: saveResult.skippedDuplicates,
+        duration
+      }
+
+    } catch (error) {
+      // Re-throw to be handled by processSingleSource
+      throw error
+    }
+  }
+
+  /**
+   * Process HTML source using HTML processor and article saver
+   */
+  private async processHTMLSource(source: LeanSource, maxArticles: number): Promise<FetchResult> {
+    const startTime = Date.now()
+    
+    try {
+      console.log(`🌐 [${this.jobId}] HTML Processing: ${source.name} with limit ${maxArticles}`)
+      
+      // Step 1: Fetch and parse HTML page - pass minimal source object
+      const htmlResult: HTMLFetchResult = await fetchHTMLFeed(
+        { name: source.name, url: source.url }, // Only pass what the processor needs
+        this.jobId, 
+        maxArticles
+      )
+      
+      if (!htmlResult.success) {
+        throw new Error(htmlResult.error || 'HTML fetch failed')
+      }
+
+      // Step 2: Save articles to database (currently logging only)
+      const saveResult = await saveArticlesToDatabase(
+        htmlResult.articles, 
+        source._id.toString(), 
+        source.name, 
+        this.jobId
+      )
+
+      const duration = Date.now() - startTime
+      
+      return {
+        sourceId: source._id.toString(),
+        sourceName: source.name,
+        success: true,
+        articlesFound: htmlResult.totalItems,
+        articlesProcessed: htmlResult.articles.length,
         articlesSaved: saveResult.savedArticles,
         skippedDuplicates: saveResult.skippedDuplicates,
         duration
