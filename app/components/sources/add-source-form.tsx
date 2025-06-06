@@ -18,6 +18,7 @@ export function AddSourceForm({ onSourceAdded }: AddSourceFormProps) {
   const [isTesting, setIsTesting] = useState(false)
   const [testResult, setTestResult] = useState<TestConnectionResult | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isFormVisible, setIsFormVisible] = useState(false)
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -103,6 +104,8 @@ export function AddSourceForm({ onSourceAdded }: AddSourceFormProps) {
         setTestResult(null)
         setErrors({})
         onSourceAdded()
+        // Collapse form after successful submission
+        setIsFormVisible(false)
       } else {
         const error = await response.json()
         setErrors({ submit: error.message || 'Failed to add source' })
@@ -131,11 +134,29 @@ export function AddSourceForm({ onSourceAdded }: AddSourceFormProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-900">Add New Source</h2>
-        <span className="text-sm text-gray-500">Add RSS feeds or websites to monitor</span>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">Add New Source</h2>
+          <span className="text-sm text-gray-500">Add RSS feeds or websites to monitor</span>
+        </div>
+        <button
+          onClick={() => setIsFormVisible(!isFormVisible)}
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          title={isFormVisible ? "Hide form" : "Show form"}
+        >
+          <span>{isFormVisible ? "Hide" : "Show"}</span>
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${isFormVisible ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {isFormVisible && (
+        <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Source Name */}
           <div>
@@ -284,6 +305,7 @@ export function AddSourceForm({ onSourceAdded }: AddSourceFormProps) {
           </button>
         </div>
       </form>
+      )}
     </div>
   )
 }

@@ -48,14 +48,17 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
               <Link href="/dashboard" className="flex items-center">
                 <span className="ml-3 text-xl font-bold text-gray-900">Connor&apos;s Dashboard</span>
               </Link>
-              
+
               {/* Navigation Links */}
               <nav className="hidden md:flex space-x-6">
                 <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Overview
                 </Link>
-                <Link href="/finances" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Finances
+                <Link href="/dashboard/news/sources" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Sources
+                </Link>
+                <Link href="/dashboard/news/articles" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Articles
                 </Link>
               </nav>
             </div>
