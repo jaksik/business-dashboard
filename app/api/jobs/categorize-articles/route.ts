@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { categorizeOneArticle } from '../../../../lib/jobs/article-categorize'
+import { categorizeArticles } from '../../../../lib/jobs/article-categorize'
 
 export async function POST(request: NextRequest) {
   try {
-    await categorizeOneArticle()
+    const body = await request.json().catch(() => ({}))
+    const articleCount = body.articleCount || 1
+    const batchSize = body.batchSize || 5
+
+    await categorizeArticles(articleCount, batchSize, 'api')
 
     return NextResponse.json({
-      message: 'Article categorization test completed - check console for OpenAI response'
+      message: `Article categorization completed for ${articleCount} articles in batches of ${batchSize} - check console for detailed results and run log`
     })
 
   } catch (error) {
