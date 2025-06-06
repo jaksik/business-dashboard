@@ -9,6 +9,9 @@ interface ArticleFiltersProps {
   filterOptions: FilterOptions
   resultsCount: number
   totalCount: number
+  selectedCount?: number
+  isSelectAllChecked?: boolean
+  onSelectAll?: () => void
 }
 
 export function ArticleFiltersComponent({
@@ -16,7 +19,10 @@ export function ArticleFiltersComponent({
   onFiltersChange,
   filterOptions,
   resultsCount,
-  totalCount
+  totalCount,
+  selectedCount = 0,
+  isSelectAllChecked = false,
+  onSelectAll
 }: ArticleFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
@@ -179,13 +185,35 @@ export function ArticleFiltersComponent({
           </button>
         </div>
 
-        {/* Results Counter */}
-        <div className="text-sm text-gray-600">
-          Showing {resultsCount.toLocaleString()} of {totalCount.toLocaleString()} articles
-          {activeFiltersCount > 0 && (
-            <span className="ml-2">
-              ({activeFiltersCount} filter{activeFiltersCount !== 1 ? 's' : ''} active)
-            </span>
+        {/* Results Counter and Bulk Actions */}
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-600">
+            Showing {resultsCount.toLocaleString()} of {totalCount.toLocaleString()} articles
+            {activeFiltersCount > 0 && (
+              <span className="ml-2">
+                ({activeFiltersCount} filter{activeFiltersCount !== 1 ? 's' : ''} active)
+              </span>
+            )}
+            {selectedCount > 0 && (
+              <span className="ml-2 text-blue-600 font-medium">
+                • {selectedCount} selected
+              </span>
+            )}
+          </div>
+          
+          {/* Select All Checkbox */}
+          {onSelectAll && resultsCount > 0 && (
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={isSelectAllChecked}
+                onChange={onSelectAll}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <label className="text-sm text-gray-700 select-none cursor-pointer" onClick={onSelectAll}>
+                Select all ({resultsCount})
+              </label>
+            </div>
           )}
         </div>
       </div>

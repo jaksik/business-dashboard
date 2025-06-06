@@ -26,6 +26,10 @@ export default function ArticlesPage() {
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({ sources: [], categories: [] })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  // Bulk selection state
+  const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set())
+  const [isSelectAllChecked, setIsSelectAllChecked] = useState(false)
 
   const fetchArticles = useCallback(async (currentFilters: ArticleFilters) => {
     try {
@@ -92,6 +96,81 @@ export default function ArticlesPage() {
     })
   }
 
+  // Bulk selection handlers
+  const handleArticleSelect = (articleId: string) => {
+    setSelectedArticles(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(articleId)) {
+        newSet.delete(articleId)
+      } else {
+        newSet.add(articleId)
+      }
+      return newSet
+    })
+  }
+
+  const handleSelectAll = () => {
+    if (isSelectAllChecked) {
+      setSelectedArticles(new Set())
+    } else {
+      const allIds = new Set(articleData?.articles.map(article => article._id) || [])
+      setSelectedArticles(allIds)
+    }
+    setIsSelectAllChecked(!isSelectAllChecked)
+  }
+
+  // Update select all state when articles change or selection changes
+  useEffect(() => {
+    const totalArticles = articleData?.articles.length || 0
+    const selectedCount = selectedArticles.size
+    setIsSelectAllChecked(totalArticles > 0 && selectedCount === totalArticles)
+  }, [selectedArticles, articleData?.articles])
+
+  const handleBulkDelete = async () => {
+    const count = selectedArticles.size
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${count} selected article${count > 1 ? 's' : ''}? This action cannot be undone.`
+    )
+    
+    if (!confirmed) return
+
+    try {
+      setLoading(true)
+      
+      // Call bulk delete API
+      const response = await fetch('/api/articles/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleIds: Array.from(selectedArticles) })
+      })
+
+      if (!response.ok) throw new Error('Failed to delete articles')
+
+      // Update local state
+      setArticleData(prev => {
+        if (!prev) return prev
+        return {
+          ...prev,
+          articles: prev.articles.filter(article => !selectedArticles.has(article._id)),
+          pagination: {
+            ...prev.pagination,
+            total: prev.pagination.total - selectedArticles.size
+          }
+        }
+      })
+
+      // Clear selection
+      setSelectedArticles(new Set())
+      setIsSelectAllChecked(false)
+
+    } catch (error) {
+      console.error('Bulk delete failed:', error)
+      setError('Failed to delete selected articles')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <ProtectedLayout title="News Articles">
       <div className="space-y-6">
@@ -121,13 +200,53 @@ export default function ArticlesPage() {
           filterOptions={filterOptions}
           resultsCount={articleData?.articles.length || 0}
           totalCount={articleData?.pagination.total || 0}
+          selectedCount={selectedArticles.size}
+          isSelectAllChecked={isSelectAllChecked}
+          onSelectAll={handleSelectAll}
         />
+
+        {/* Bulk Actions Bar */}
+        {selectedArticles.size > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-blue-900">
+                  {selectedArticles.size} article{selectedArticles.size > 1 ? 's' : ''} selected
+                </span>
+                <button
+                  onClick={() => setSelectedArticles(new Set())}
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  Clear selection
+                </button>
+              </div>
+              <button
+                onClick={handleBulkDelete}
+                disabled={loading}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    🗑️ Delete Selected
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Articles List */}
         <ArticlesList
           articles={articleData?.articles || []}
           loading={loading}
           onArticleDeleted={handleArticleDeleted}
+          selectedArticles={selectedArticles}
+          onArticleSelect={handleArticleSelect}
         />
 
         {/* Pagination */}

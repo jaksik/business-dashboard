@@ -6,9 +6,11 @@ interface ArticlesListProps {
     articles: Article[]
     loading: boolean
     onArticleDeleted?: (articleId: string) => void
+    selectedArticles?: Set<string>
+    onArticleSelect?: (articleId: string) => void
 }
 
-export function ArticlesList({ articles, loading, onArticleDeleted }: ArticlesListProps) {
+export function ArticlesList({ articles, loading, onArticleDeleted, selectedArticles = new Set(), onArticleSelect }: ArticlesListProps) {
     const handleDeleteArticle = async (articleId: string, articleTitle: string) => {
         try {
             const response = await fetch(`/api/articles/${articleId}`, {
@@ -160,24 +162,42 @@ export function ArticlesList({ articles, loading, onArticleDeleted }: ArticlesLi
                             {/* Dates */}
 
 
-                            {/* Delete Button - Positioned in bottom right */}
-                            <div className="flex justify-between mt-auto pt-2">
-                                <div className="text-xs text-gray-500 mb-4 space-y-1">
+                            {/* Delete Button and Selection Checkbox - Positioned in bottom right */}
+                            <div className="flex justify-between items-end mt-auto pt-2">
+                                <div className="text-xs text-gray-500 space-y-1">
                                     <div>Published: {formatDate(article.publishedDate)}</div>
                                     <div>Fetched: {formatDate(article.fetchedAt)}</div>
                                 </div>
-                                <button
-                                    onClick={async () => {
-                                        const confirmed = window.confirm(`Are you sure you want to delete "${truncateText(article.title, 50)}"?`)
-                                        if (confirmed) {
-                                            await handleDeleteArticle(article._id, article.title)
-                                        }
-                                    }}
-                                    className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 rounded-full transition-colors"
-                                    title="Delete article"
-                                >
-                                    🗑️
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    {/* Selection Checkbox */}
+                                    {onArticleSelect && (
+                                        <label className="flex items-center gap-2 cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedArticles.has(article._id)}
+                                                onChange={() => onArticleSelect(article._id)}
+                                                className="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
+                                            />
+                                            <span className="text-xs text-gray-600 group-hover:text-blue-600 transition-colors">
+                                                Select
+                                            </span>
+                                        </label>
+                                    )}
+                                    {/* Delete Button */}
+                                    <button
+                                        onClick={async () => {
+                                            const confirmed = window.confirm(`Are you sure you want to delete "${truncateText(article.title, 50)}"?`)
+                                            if (confirmed) {
+                                                await handleDeleteArticle(article._id, article.title)
+                                            }
+                                        }}
+                                        className="flex items-center gap-1 px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 rounded-md transition-colors text-xs font-medium"
+                                        title="Delete article"
+                                    >
+                                        🗑️
+                                        <span className="hidden sm:inline">Delete</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
