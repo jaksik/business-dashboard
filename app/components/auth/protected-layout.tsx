@@ -59,7 +59,10 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
                   Articles
                 </Link>
                 <Link href="/dashboard/news/fetch-logs" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Logs
+                  Fetch Logs
+                </Link>
+                <Link href="/dashboard/news/categorization-logs" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Categorization Logs
                 </Link>
               </nav>
             </div>

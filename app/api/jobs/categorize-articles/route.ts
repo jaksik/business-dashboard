@@ -4,7 +4,7 @@ import { categorizeArticles } from '../../../../lib/jobs/article-categorize'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}))
-    const articleCount = body.articleCount || 1
+    const articleCount = body.articleCount || 10
 
     await categorizeArticles(articleCount, 'api')
 
