@@ -51,15 +51,15 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
 
               {/* Navigation Links */}
               <nav className="hidden md:flex space-x-6">
-   
+
                 <Link href="/dashboard/news/sources" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Sources
                 </Link>
                 <Link href="/dashboard/news/articles" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Articles
                 </Link>
-                                <Link href="/dashboard/news/fetch-logs" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Articles
+                <Link href="/dashboard/news/fetch-logs" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Logs
                 </Link>
               </nav>
             </div>
