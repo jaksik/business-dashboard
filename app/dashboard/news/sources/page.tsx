@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { ProtectedLayout } from "@/app/components/auth/protected-layout"
 import { AddSourceForm } from "@/app/components/sources/add-source-form"
 import { SourcesList } from "@/app/components/sources/sources-list"
+import { BulkFetchModule } from "@/app/components/sources/bulk-fetch-module"
 import { Source } from "@/app/components/sources/types"
 
 export default function SourcesPage() {
@@ -102,6 +103,9 @@ export default function SourcesPage() {
                         </button>
                     </div>
                 )}
+
+                {/* Bulk Fetch Module */}
+                <BulkFetchModule onFetchComplete={fetchSources} />
 
                 {/* Add New Source Form */}
                 <AddSourceForm onSourceAdded={handleSourceAdded} />
