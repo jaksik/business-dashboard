@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-export interface ICategoryCorrection extends Document {
+export interface ICategoryCorrectionLog extends Document {
   title: string
   source: string
   description?: string
@@ -17,7 +17,7 @@ export interface ICategoryCorrection extends Document {
   correctedAt: Date
 }
 
-const CategoryCorrectionSchema: Schema<ICategoryCorrection> = new Schema(
+const CategoryCorrectionLogSchema: Schema<ICategoryCorrectionLog> = new Schema(
   {
     title: {
       type: String,
@@ -73,13 +73,13 @@ const CategoryCorrectionSchema: Schema<ICategoryCorrection> = new Schema(
 )
 
 // Indexes for efficient querying
-CategoryCorrectionSchema.index({ correctedAt: -1 })
-CategoryCorrectionSchema.index({ source: 1 })
-CategoryCorrectionSchema.index({ 'aiCategories.news': 1 })
-CategoryCorrectionSchema.index({ 'aiCategories.tech': 1 })
+CategoryCorrectionLogSchema.index({ correctedAt: -1 })
+CategoryCorrectionLogSchema.index({ source: 1 })
+CategoryCorrectionLogSchema.index({ 'aiCategories.news': 1 })
+CategoryCorrectionLogSchema.index({ 'aiCategories.tech': 1 })
 
-const CategoryCorrection: mongoose.Model<ICategoryCorrection> = 
-  mongoose.models.CategoryCorrection || 
-  mongoose.model<ICategoryCorrection>('CategoryCorrection', CategoryCorrectionSchema)
+const CategoryCorrectionLog: mongoose.Model<ICategoryCorrectionLog> = 
+  mongoose.models.CategoryCorrectionLog || 
+  mongoose.model<ICategoryCorrectionLog>('CategoryCorrectionLog', CategoryCorrectionLogSchema)
 
-export default CategoryCorrection
+export default CategoryCorrectionLog

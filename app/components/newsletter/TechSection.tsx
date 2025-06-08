@@ -1,58 +1,52 @@
-import type { TechCategory, NewsCategory } from '../../../lib/constants/categories'
-import type { NewsletterData, PendingChanges } from './types'
+import React from 'react'
 import { ArticleRow } from './ArticleRow'
+import type { NewsletterData, PendingChanges } from './types'
+import { NEWS_CATEGORIES } from '../../../lib/constants/categories'
 
 interface TechSectionProps {
-  techCategory: TechCategory
+  techCategory: string
   articleData: NewsletterData
-  onUpdateCategory: (articleId: string, categoryType: 'news' | 'tech', newCategory: string) => void
   pendingChanges: PendingChanges
+  onUpdateCategory: (articleId: string, categoryType: 'news' | 'tech', newCategory: string) => void
   onUpdateRationale: (articleId: string, rationale: string) => void
 }
 
 export function TechSection({ 
   techCategory, 
   articleData, 
-  onUpdateCategory, 
   pendingChanges, 
+  onUpdateCategory, 
   onUpdateRationale 
 }: TechSectionProps) {
   const articles = articleData[techCategory] || []
   const relevantArticles = articles.filter(article => 
-    article.categorization.categories.news !== 'Likely Noise or Opinion'
+    article.categorization.categories.news !== 'Not Relevant'
   )
 
   if (relevantArticles.length === 0) return null
 
-  // Sort by news priority
-  const priorityOrder: { [key in NewsCategory]: number } = {
-    'Top Story Candidate': 1,
-    'Solid News': 2, 
-    'Interesting but Lower Priority': 3,
-    'Likely Noise or Opinion': 4
-  }
-
-  const sortedArticles = relevantArticles.sort((a, b) => {
-    const aPriority = priorityOrder[a.categorization.categories.news || 'Likely Noise or Opinion']
-    const bPriority = priorityOrder[b.categorization.categories.news || 'Likely Noise or Opinion']
-    return aPriority - bPriority
-  })
-
   return (
     <div className="mb-8">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">
-        📁 {techCategory} ({sortedArticles.length})
+        {techCategory} ({relevantArticles.length})
       </h2>
+      
       <div className="space-y-2">
-        {sortedArticles.map((article) => (
-          <ArticleRow 
-            key={article._id} 
-            article={article} 
-            onUpdateCategory={onUpdateCategory}
-            pendingChange={pendingChanges[article._id]}
-            onUpdateRationale={onUpdateRationale}
-          />
-        ))}
+        {relevantArticles
+          .sort((a, b) => {
+            const newsOrder = NEWS_CATEGORIES.indexOf(a.categorization.categories.news || 'Not Relevant')
+            const techOrder = NEWS_CATEGORIES.indexOf(b.categorization.categories.news || 'Not Relevant')
+            return newsOrder - techOrder
+          })
+          .map(article => (
+            <ArticleRow
+              key={article._id}
+              article={article}
+              pendingChange={pendingChanges[article._id]}
+              onUpdateCategory={onUpdateCategory}
+              onUpdateRationale={onUpdateRationale}
+            />
+          ))}
       </div>
     </div>
   )

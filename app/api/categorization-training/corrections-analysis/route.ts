@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 import connectToDatabase from '../../../../lib/db'
-import CategoryCorrection, { ICategoryCorrection } from '../../../../models/CategoryCorrection'
+import CategoryCorrectionLog, { ICategoryCorrectionLog } from '../../../../models/CategoryCorrectionLog'
 
 export async function GET() {
   try {
     await connectToDatabase()
 
     // Get all corrections
-    const corrections = await CategoryCorrection.find({})
+    const corrections = await CategoryCorrectionLog.find({})
       .sort({ correctedAt: -1 })
       .lean()
 
@@ -27,7 +27,7 @@ export async function GET() {
       }> 
     }> = {}
 
-    corrections.forEach((correction: ICategoryCorrection) => {
+    corrections.forEach((correction: ICategoryCorrectionLog) => {
       // Track news category corrections
       if (correction.aiCategories.news !== correction.humanCategories.news) {
         const key = `News: ${correction.aiCategories.news} → ${correction.humanCategories.news}`

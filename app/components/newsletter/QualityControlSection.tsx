@@ -15,7 +15,7 @@ export function QualityControlSection({
   onUpdateRationale
 }: QualityControlSectionProps) {
   const noiseArticles = Object.values(articleData).flat().filter(article =>
-    article.categorization.categories.news === 'Likely Noise or Opinion'
+    article.categorization.categories.news === 'Not Relevant'
   )
   
   const notRelevantArticles = Object.values(articleData).flat().filter(article =>

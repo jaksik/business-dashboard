@@ -180,9 +180,9 @@ export async function categorizeArticles(
         const failedResult: IArticleCategorizationResult = {
           articleId: article._id.toString(),
           title: article.title,
-          newsCategory: 'Likely Noise or Opinion', // Default fallback
-          techCategory: 'Not Relevant', // Default fallback
-          rationale: 'Failed to process',
+          newsCategory: null, // No false categorization - leave empty
+          techCategory: null, // No false categorization - leave empty
+          rationale: 'Processing failed - OpenAI error',
           confidence: 0,
           status: 'failed',
           errorMessage: processingError instanceof Error ? processingError.message : 'Unknown error'
