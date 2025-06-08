@@ -4,7 +4,7 @@ export const NEWS_CATEGORIES = [
   'Top Story Candidate',
   'Solid News', 
   'Interesting but Lower Priority',
-  'Likely Noise or Opinion'
+  'Not Relevant'
 ] as const
 
 export const TECH_CATEGORIES = [
@@ -37,10 +37,10 @@ export const NEWS_CATEGORY_CRITERIA = {
     keywords: ['Tips for', 'explores', 'discusses', 'community project', 'vision pieces', 'conceptual discussions'],
     content: 'Niche tool releases, specific tutorials, community news, smaller research findings, thoughtful perspectives, platform insights.'
   },
-  'Likely Noise or Opinion': {
-    nature: 'Content that is not direct news or is overly speculative/opinion-based.',
-    keywords: ['Opinion:', 'Perspective:', 'How to survive', 'The future of X is Y (speculative)', 'Is AI X?', 'Why I think Y', 'event announcements', 'tips collections'],
-    content: 'Opinion pieces, guest posts, highly speculative articles, basic explainers, marketing content, fear-mongering, generic "AI trend" pieces, event promotion.'
+  'Not Relevant': {
+    nature: 'Content that is not direct news, is overly speculative/opinion-based, or not related to artificial intelligence.',
+    keywords: ['Opinion:', 'Perspective:', 'How to survive', 'The future of X is Y (speculative)', 'Is AI X?', 'Why I think Y', 'event announcements', 'tips collections', 'the best' ],
+    content: 'Opinion pieces, guest posts, highly speculative articles, basic explainers, marketing content, fear-mongering, generic "AI trend" pieces, event promotion, product lists.'
   }
 } as const
 

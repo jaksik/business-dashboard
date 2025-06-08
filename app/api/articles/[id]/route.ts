@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../../lib/auth'
 import connectToDatabase from '../../../../lib/db'
 import Article from '../../../../models/Article'
-import CategoryCorrection from '../../../../models/CategoryCorrection'
+import CategoryCorrectionLog from '../../../../models/CategoryCorrectionLog'
 import { isValidNewsCategory, isValidTechCategory } from '../../../../lib/constants/categories'
 
 export async function DELETE(
@@ -95,7 +95,7 @@ export async function PATCH(
 
     // If this is a correction, log it to CategoryCorrection collection
     if (isCorrection) {
-      await CategoryCorrection.create({
+      await CategoryCorrectionLog.create({
         title: currentArticle.title,
         source: currentArticle.sourceName,
         description: currentArticle.metaDescription,

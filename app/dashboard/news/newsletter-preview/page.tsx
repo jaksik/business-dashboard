@@ -136,7 +136,7 @@ export default function NewsletterPreviewPage() {
 
   const totalArticles = Object.values(articleData).flat().length
   const newsletterArticles = Object.values(articleData).flat().filter(article =>
-    article.categorization.categories.news !== 'Likely Noise or Opinion' &&
+    article.categorization.categories.news !== 'Not Relevant' &&
     article.categorization.categories.tech !== 'Not Relevant'
   ).length
 

@@ -15,7 +15,7 @@ export function ArticleRow({ article, onUpdateCategory, pendingChange, onUpdateR
       case 'Top Story Candidate': return 'text-red-600 font-semibold'
       case 'Solid News': return 'text-blue-600 font-medium'
       case 'Interesting but Lower Priority': return 'text-green-600'
-      case 'Likely Noise or Opinion': return 'text-orange-600'
+      case 'Not Relevant': return 'text-orange-600'
       default: return 'text-gray-500'
     }
   }

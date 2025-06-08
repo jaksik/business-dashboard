@@ -12,8 +12,8 @@ import {
 export interface IArticleCategorizationResult {
   articleId: string
   title: string
-  newsCategory: NewsCategory
-  techCategory: TechCategory
+  newsCategory: NewsCategory | null
+  techCategory: TechCategory | null
   rationale: string
   confidence: number
   processingTimeMs?: number
@@ -77,13 +77,15 @@ const ArticleCategorizationResultSchema = new Schema<IArticleCategorizationResul
   title: { type: String, required: true },
   newsCategory: { 
     type: String, 
-    required: true,
-    enum: NEWS_CATEGORIES
+    required: false,
+    enum: NEWS_CATEGORIES,
+    default: null
   },
   techCategory: { 
     type: String, 
-    required: true,
-    enum: TECH_CATEGORIES
+    required: false,
+    enum: TECH_CATEGORIES,
+    default: null
   },
   rationale: { type: String, required: true },
   confidence: { type: Number, required: true, min: 0, max: 100 },
