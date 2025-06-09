@@ -19,8 +19,8 @@ const NAV_LINKS = [
     section: 'main'
   },
   {
-    label: 'Newsletter Preview',
-    href: '/dashboard/news/newsletter-preview',
+    label: 'Newsletter',
+    href: '/dashboard/news/newsletter',
     section: 'main'
   },
   {
@@ -32,11 +32,6 @@ const NAV_LINKS = [
     label: 'Categorization Logs',
     href: '/dashboard/news/categorization-logs',
     section: 'logs'
-  },
-  {
-    label: 'Training',
-    href: '/dashboard/news/categorization-training',
-    section: 'training'
   }
 ] as const
 

@@ -49,7 +49,7 @@ export function ArticleRow({ article, onUpdateCategory, pendingChange, onUpdateR
       <div className="flex items-start justify-between gap-4">
         {/* Article Info */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-gray-900 mb-1">
+          <h3 className="font-bold text-md text-gray-900 mb-1">
             <a 
               href={article.link} 
               target="_blank" 
@@ -76,8 +76,8 @@ export function ArticleRow({ article, onUpdateCategory, pendingChange, onUpdateR
             <select
               value={getCurrentNewsCategory()}
               onChange={(e) => onUpdateCategory(article._id, 'news', e.target.value)}
-              className={`text-xs px-2 py-1 border rounded ${getPriorityColor(getCurrentNewsCategory() as NewsCategory)} ${
-                hasChanges ? 'border-yellow-400' : ''
+              className={`text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${getPriorityColor(getCurrentNewsCategory() as NewsCategory)} ${
+                hasChanges ? 'border-yellow-400 bg-yellow-50' : 'border-gray-300'
               }`}
             >
               {NEWS_CATEGORIES.map(category => (
@@ -93,8 +93,8 @@ export function ArticleRow({ article, onUpdateCategory, pendingChange, onUpdateR
             <select
               value={getCurrentTechCategory()}
               onChange={(e) => onUpdateCategory(article._id, 'tech', e.target.value)}
-              className={`text-xs px-2 py-1 border rounded text-purple-600 ${
-                hasChanges ? 'border-yellow-400' : ''
+              className={`text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-purple-600 ${
+                hasChanges ? 'border-yellow-400 bg-yellow-50' : 'border-gray-300'
               }`}
             >
               {TECH_CATEGORIES.map(category => (
@@ -117,7 +117,7 @@ export function ArticleRow({ article, onUpdateCategory, pendingChange, onUpdateR
             value={pendingChange?.rationale || ''}
             onChange={(e) => onUpdateRationale(article._id, e.target.value)}
             placeholder="Please explain why you're changing the categorization..."
-            className="w-full p-2 text-sm border border-gray-300 rounded resize-none"
+            className="w-full p-3 text-sm border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             rows={2}
           />
           {(!pendingChange?.rationale || !pendingChange.rationale.trim()) && (
