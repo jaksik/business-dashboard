@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import connectToDatabase from '../../../../lib/db'
-import ArticleCategorizationLog from '../../../../models/ArticleCategorizationLog'
+import connectToDatabase from '../../../../../lib/db'
+import ArticleCategorizationLog from '../../../../../models/ArticleCategorizationLog'
 
 export async function GET(request: NextRequest) {
   try {

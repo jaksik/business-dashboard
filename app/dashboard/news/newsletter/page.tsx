@@ -5,15 +5,10 @@ import { ProtectedLayout } from "../../../components/auth/protected-layout"
 import { TECH_CATEGORIES } from '../../../../lib/constants/categories'
 import type { TechCategory, NewsCategory } from '../../../../lib/constants/categories'
 
-// Import newsletter components
-import { NewsletterHeader } from '../../../components/newsletter/NewsletterHeader'
-import { PendingChangesPanel } from '../../../components/newsletter/PendingChangesPanel'
-import { TechSection } from '../../../components/newsletter/TechSection'
-import { QualityControlSection } from '../../../components/newsletter/QualityControlSection'
-import type { 
-  NewsletterData, 
-  PendingChanges 
-} from '../../../components/newsletter/types'
+import { NewsletterHeader } from '../../../components/newsletter/newsletter-article-filter'
+import { PendingChangesPanel } from '../../../components/newsletter/category-update-panel'
+import { NewsLetterSections } from '../../../components/newsletter/newsletter-sections'
+import type { NewsletterData, PendingChanges } from '../../../components/newsletter/types'
 
 export default function NewsletterPreviewPage() {
   const [articleData, setArticleData] = useState<NewsletterData>({})
@@ -27,7 +22,7 @@ export default function NewsletterPreviewPage() {
       setLoading(true)
       const response = await fetch(`/api/newsletter-preview?days=${days}`)
       if (!response.ok) throw new Error('Failed to fetch newsletter data')
-      
+
       const data = await response.json()
       setArticleData(data)
     } catch (err) {
@@ -50,7 +45,7 @@ export default function NewsletterPreviewPage() {
 
     const updatedChange = {
       ...existingChange,
-      ...(categoryType === 'news' 
+      ...(categoryType === 'news'
         ? { newNewsCategory: newCategory as NewsCategory }
         : { newTechCategory: newCategory as TechCategory }
       )
@@ -75,30 +70,30 @@ export default function NewsletterPreviewPage() {
   const submitPendingChanges = async () => {
     try {
       setLoading(true)
-      
+
       for (const change of Object.values(pendingChanges)) {
         const updateData: Record<string, unknown> = {
           isTrainingData: true,
           rationale: change.rationale
         }
-        
+
         if (change.newNewsCategory && change.newNewsCategory !== change.originalNewsCategory) {
           updateData.newsCategory = change.newNewsCategory
         }
-        
+
         if (change.newTechCategory && change.newTechCategory !== change.originalTechCategory) {
           updateData.techCategory = change.newTechCategory
         }
-        
+
         const response = await fetch(`/api/articles/${change.articleId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updateData)
         })
-        
+
         if (!response.ok) throw new Error('Failed to update article')
       }
-      
+
       // Clear pending changes and refresh data
       setPendingChanges({})
       await fetchNewsletterData()
@@ -120,16 +115,34 @@ export default function NewsletterPreviewPage() {
 
   if (loading) return (
     <ProtectedLayout title="📰 Newsletter Preview">
-      <div className="p-6">
-        <div className="animate-pulse">Loading newsletter preview...</div>
+      <div className="space-y-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">Loading newsletter preview...</span>
+          </div>
+        </div>
       </div>
     </ProtectedLayout>
   )
 
   if (error) return (
     <ProtectedLayout title="📰 Newsletter Preview">
-      <div className="p-6">
-        <div className="text-red-600">Error: {error}</div>
+      <div className="space-y-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="flex">
+            <div className="ml-3">
+              <h3 className="text-sm font-medium">Error loading newsletter preview</h3>
+              <p className="mt-1 text-sm">{error}</p>
+              <button
+                onClick={fetchNewsletterData}
+                className="mt-2 text-sm font-medium text-red-600 hover:text-red-500"
+              >
+                Try again
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </ProtectedLayout>
   )
@@ -144,9 +157,9 @@ export default function NewsletterPreviewPage() {
 
   return (
     <ProtectedLayout title="📰 Newsletter Preview">
-      <div className="p-6 max-w-6xl mx-auto">
+      <div className="space-y-6">
         {/* Header with day selector and stats */}
-        <NewsletterHeader 
+        <NewsletterHeader
           days={days}
           onDaysChange={setDays}
           newsletterArticles={newsletterArticles}
@@ -163,29 +176,21 @@ export default function NewsletterPreviewPage() {
         )}
 
         {/* Newsletter Content Sections */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">
-            📬 Newsletter Content
-          </h1>
-          {TECH_CATEGORIES.filter(cat => cat !== 'Not Relevant').map(techCategory => (
-            <TechSection
-              key={techCategory}
-              techCategory={techCategory}
-              articleData={articleData}
-              onUpdateCategory={handleCategoryChange}
-              pendingChanges={pendingChanges}
-              onUpdateRationale={updatePendingRationale}
-            />
-          ))}
-        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
 
-        {/* Quality Control Section */}
-        <QualityControlSection
-          articleData={articleData}
-          onUpdateCategory={handleCategoryChange}
-          pendingChanges={pendingChanges}
-          onUpdateRationale={updatePendingRationale}
-        />
+          <div className="p-6 space-y-8">
+            {TECH_CATEGORIES.map(techCategory => (
+              <NewsLetterSections
+                key={techCategory}
+                techCategory={techCategory}
+                articleData={articleData}
+                onUpdateCategory={handleCategoryChange}
+                pendingChanges={pendingChanges}
+                onUpdateRationale={updatePendingRationale}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </ProtectedLayout>
   )
