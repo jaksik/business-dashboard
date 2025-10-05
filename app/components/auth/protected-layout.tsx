@@ -19,11 +19,6 @@ const NAV_LINKS = [
     section: 'main'
   },
   {
-    label: 'Newsletter',
-    href: '/dashboard/news/newsletter',
-    section: 'main'
-  },
-  {
     label: 'Fetch Logs',
     href: '/dashboard/news/fetch-logs',
     section: 'logs'
