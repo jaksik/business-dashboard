@@ -84,7 +84,7 @@ export default function SourcesPage() {
     }
 
     return (
-        <ProtectedLayout title="News Sources Management">
+        <ProtectedLayout title="Article Fetch Management">
             <div className="space-y-6">
 
                 {/* Error Display */}
