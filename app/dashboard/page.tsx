@@ -8,7 +8,7 @@ export default function Dashboard() {
       <div className="space-y-6">
 
         {/* User-specific Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Your Revenue</h3>
             <p className="text-3xl font-bold text-green-600">$12,450</p>
@@ -32,10 +32,10 @@ export default function Dashboard() {
             <p className="text-3xl font-bold text-orange-600">32h</p>
             <p className="text-sm text-gray-500">This week</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Personal Activity Feed */}
-        <div className="bg-white rounded-lg shadow-sm border">
+        {/* <div className="bg-white rounded-lg shadow-sm border">
           <div className="px-6 py-4 border-b">
             <h2 className="text-xl font-semibold text-gray-900">Your Recent Activity</h2>
           </div>
@@ -79,10 +79,10 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Quick Stats Grid */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <h3 className="text-sm font-medium text-gray-500 mb-2">Monthly Budget</h3>
           <p className="text-2xl font-bold text-green-600">$3,200</p>
@@ -106,10 +106,10 @@ export default function Dashboard() {
           <p className="text-2xl font-bold text-orange-600">3/12</p>
           <p className="text-xs text-gray-500">2024 goal</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Recent Activity */}
-      <div className="mt-8 bg-white rounded-lg shadow-sm border">
+      {/* <div className="mt-8 bg-white rounded-lg shadow-sm border">
         <div className="px-6 py-4 border-b">
           <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
         </div>
@@ -128,7 +128,7 @@ export default function Dashboard() {
               <span className="text-sm text-gray-600">Finished chapter 3 of &ldquo;Atomic Habits&rdquo; - 2 days ago</span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </ProtectedLayout>
   )

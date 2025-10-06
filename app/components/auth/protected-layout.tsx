@@ -8,14 +8,14 @@ import { AuthButton } from "./auth-button"
 
 // Navigation configuration
 const NAV_LINKS = [
-  {
-    label: 'Sources',
-    href: '/dashboard/news/sources',
+    {
+    label: 'Articles',
+    href: '/dashboard/news/articles',
     section: 'main'
   },
   {
-    label: 'Articles',
-    href: '/dashboard/news/articles',
+    label: 'Fetch Management',
+    href: '/dashboard/news/sources',
     section: 'main'
   },
   {
@@ -86,7 +86,7 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
               <Link href="/dashboard" className="flex items-center">
-                <span className="ml-3 text-xl font-bold text-gray-900">Business Dashboard</span>
+                <span className="text-3xl font-bold text-gray-900">Built with AI</span>
               </Link>
 
               {/* Navigation Links */}
@@ -95,9 +95,9 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center text-gray-600 hover:text-gray-900 transition-colors focus:outline-none"
+                    className="flex items-center text-gray-600 hover:text-gray-900 transition-colors focus:outline-none text-lg"
                   >
-                    News
+                    Menu
                     <svg 
                       className={`ml-1 h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
                       fill="none" 
@@ -110,7 +110,7 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
 
                   {/* Dropdown Menu */}
                   {isDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-10">
+                    <div className="absolute top-full left-0 mt-2 w-70 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-10">
                       {NAV_LINKS.map((link, index) => {
                         const isFirstInSection = index === 0 || NAV_LINKS[index - 1].section !== link.section
                         const needsSeparator = isFirstInSection && index > 0
@@ -120,7 +120,7 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
                             {needsSeparator && <div className="border-t border-gray-100 my-1"></div>}
                             <Link 
                               href={link.href}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 transition-colors"
                               onClick={() => setIsDropdownOpen(false)}
                             >
                               {link.label}
@@ -140,8 +140,8 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
 
       {/* Page Title */}
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <h1 className="text-xl font-bold text-gray-900">{title}</h1>
         </div>
       </div>
 
