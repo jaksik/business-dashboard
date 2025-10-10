@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { ProtectedLayout } from "../../../components/auth/protected-layout"
-import { ArticleFiltersComponent } from "../../../components/articles/article-filters"
-import { ArticlesList } from "../../../components/articles/articles-list"
-import { Pagination } from "../../../components/articles/pagination"
-import { ArticleFilters, ArticleResponse, FilterOptions } from "../../../components/articles/types"
+import { ProtectedLayout } from "../../components/auth/protected-layout"
+import { ArticleFiltersComponent } from "../../components/articles/article-filters"
+import { ArticlesList } from "../../components/articles/articles-list"
+import { Pagination } from "../../components/articles/pagination"
+import { ArticleFilters, ArticleResponse, FilterOptions } from "../../components/articles/types"
 
 const defaultFilters: ArticleFilters = {
   search: '',
