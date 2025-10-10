@@ -2,28 +2,23 @@
 
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState, useRef } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import { AuthButton } from "./auth-button"
+import { DropdownMenu } from "./dropdown-menu" // 👈 Import the new component
 
-// Navigation configuration
-const NAV_LINKS = [
-    {
-    label: 'Articles',
-    href: '/dashboard/news/articles',
-    section: 'main'
-  },
-  {
-    label: 'Fetch Articles',
-    href: '/dashboard/news/sources',
-    section: 'main'
-  },
-  {
-    label: 'Fetch Logs',
-    href: '/dashboard/news/fetch-logs',
-    section: 'main'
-  }
-] as const
+// 1. Restructure your navigation configuration to group links by menu
+const NAV_MENUS = {
+  'Articles': [
+    { label: 'View Articles', href: '/dashboard/articles' },
+    { label: 'Fetch New Articles', href: '/dashboard/articles/sources' },
+    { label: 'Article Fetch Logs', href: '/dashboard/articles/fetch-logs' },
+  ],
+  'YouTube': [
+    { label: 'Stats', href: '/dashboard/youtube' },
+    { label: 'Settings', href: '/dashboard/settings' },
+  ]
+} as const
 
 interface ProtectedLayoutProps {
   children: React.ReactNode
@@ -33,30 +28,15 @@ interface ProtectedLayoutProps {
 export function ProtectedLayout({ children, title = "Personal Dashboard" }: ProtectedLayoutProps) {
   const { status } = useSession()
   const router = useRouter()
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
 
+  // This logic remains the same
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/')
     }
   }, [status, router])
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
-
-  // Show loading state
+  // Loading state remains the same
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -68,7 +48,7 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
     )
   }
 
-  // Don't render anything while redirecting
+  // Unauthenticated state remains the same
   if (status === 'unauthenticated') {
     return null
   }
@@ -81,51 +61,14 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-8">
               <Link href="/dashboard" className="flex items-center">
-                <span className="text-3xl font-bold text-gray-900">Built with AI</span>
+                <span className="text-3xl font-bold text-gray-900">Welcome</span>
               </Link>
 
-              {/* Navigation Links */}
+              {/* 2. Render dropdowns by mapping over the new NAV_MENUS object */}
               <nav className="hidden md:flex space-x-6">
-                {/* News Dropdown */}
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center text-gray-600 hover:text-gray-900 transition-colors focus:outline-none text-lg"
-                  >
-                    Menu
-                    <svg 
-                      className={`ml-1 h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {isDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-70 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-10">
-                      {NAV_LINKS.map((link, index) => {
-                        const isFirstInSection = index === 0 || NAV_LINKS[index - 1].section !== link.section
-                        const needsSeparator = isFirstInSection && index > 0
-                        
-                        return (
-                          <div key={link.href}>
-                            {needsSeparator && <div className="border-t border-gray-100 my-1"></div>}
-                            <Link 
-                              href={link.href}
-                              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 transition-colors"
-                              onClick={() => setIsDropdownOpen(false)}
-                            >
-                              {link.label}
-                            </Link>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
+                {Object.entries(NAV_MENUS).map(([title, links]) => (
+                  <DropdownMenu key={title} title={title} links={links} />
+                ))}
               </nav>
             </div>
             <AuthButton />
@@ -141,7 +84,7 @@ export function ProtectedLayout({ children, title = "Personal Dashboard" }: Prot
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:_8 py-8">
         {children}
       </main>
     </div>
