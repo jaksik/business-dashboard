@@ -3,8 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../../lib/auth'
 import connectToDatabase from '../../../../lib/db'
 import Article from '../../../../models/Article'
-import CategoryCorrectionLog from '../../../../models/CategoryCorrectionLog'
-import { isValidNewsCategory, isValidTechCategory } from '../../../../lib/constants/categories'
+
 
 export async function DELETE(
   request: NextRequest,
@@ -74,44 +73,13 @@ export async function PATCH(
       )
     }
 
-    // Validate categories
-    if (newsCategory && !isValidNewsCategory(newsCategory)) {
-      return NextResponse.json(
-        { error: 'Invalid news category' },
-        { status: 400 }
-      )
-    }
-
-    if (techCategory && !isValidTechCategory(techCategory)) {
-      return NextResponse.json(
-        { error: 'Invalid tech category' },
-        { status: 400 }
-      )
-    }
 
     // Check if this is actually a correction (AI had categorized it before)
     const isCorrection = currentArticle.categorization.status === 'completed' && 
                         (currentArticle.categorization.categories.news || currentArticle.categorization.categories.tech)
 
     // If this is a correction, log it to CategoryCorrection collection
-    if (isCorrection) {
-      await CategoryCorrectionLog.create({
-        title: currentArticle.title,
-        source: currentArticle.sourceName,
-        description: currentArticle.metaDescription,
-        aiCategories: {
-          news: currentArticle.categorization.categories.news,
-          tech: currentArticle.categorization.categories.tech,
-          aiRationale: currentArticle.categorization.rationale,
-        },
-        humanCategories: {
-          news: newsCategory || currentArticle.categorization.categories.news,
-          tech: techCategory || currentArticle.categorization.categories.tech,
-          humanRationale: rationale || 'Corrected via newsletter preview (no rationale provided)',
-        },
-        correctedAt: new Date()
-      })
-    }
+
 
     // Build update object
     const updateObj: Record<string, unknown> = {}
