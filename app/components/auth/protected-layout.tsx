@@ -14,19 +14,14 @@ const NAV_LINKS = [
     section: 'main'
   },
   {
-    label: 'Fetch Management',
+    label: 'Fetch Articles',
     href: '/dashboard/news/sources',
     section: 'main'
   },
   {
     label: 'Fetch Logs',
     href: '/dashboard/news/fetch-logs',
-    section: 'logs'
-  },
-  {
-    label: 'Categorization Logs',
-    href: '/dashboard/news/categorization-logs',
-    section: 'logs'
+    section: 'main'
   }
 ] as const
 
