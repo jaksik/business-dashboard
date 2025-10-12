@@ -14,7 +14,7 @@ export const authOptions: AuthOptions = {
       authorization: {
         params: {
           scope:
-            'openid email profile https://www.googleapis.com/auth/youtube.readonly',
+            'openid email profile https://www.googleapis.com/auth/youtube',
         },
       },
     }),
@@ -24,12 +24,15 @@ export const authOptions: AuthOptions = {
     error: '/auth/error',
   },
   callbacks: {
-    async signIn({ user }) {
-      // Only allow your specific email (this is unchanged)
-      if (user.email === process.env.AUTHORIZED_EMAIL) {
-        return true
+    // MODIFICATION HERE
+    async signIn({ profile }) {
+      // For debugging, you can see what Google returns
+      // console.log("SIGN IN PROFILE:", profile);
+
+      if (profile?.email === process.env.AUTHORIZED_EMAIL) {
+        return true // Allow sign-in
       }
-      return false
+      return false // Deny sign-in
     },
     async redirect({ url, baseUrl }) {
       // Redirect to dashboard after successful sign in (this is unchanged)
